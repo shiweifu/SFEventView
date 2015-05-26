@@ -23,14 +23,26 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
   // Do any additional setup after loading the view, typically from a nib.
-  [self.view addSubview:self.eventView];
-  [self.eventView setFrame:CGRectMake(0, 50, 320, 392)];
-  [self.eventView setNeedsLayout];
+//  [self.view addSubview:self.eventView];
+
+
+  UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
+  [btn setTitle:@"click" forState:UIControlStateNormal];
+  [btn setFrame:CGRectMake(100, 300, 80, 50)];
+  [btn setTitleColor:[UIColor darkGrayColor]
+            forState:UIControlStateNormal];
+  [btn addTarget:self
+          action:@selector(onClick:)
+forControlEvents:UIControlEventTouchUpInside];
+  [self.view addSubview:btn];
+
+
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)onClick:(id)onClick
+{
+  NSLog(@"%@", @"hello");
+  [self.eventView showInView:self.view];
 }
 
 - (SFEventView *)eventView
@@ -63,5 +75,6 @@
   }
   return _eventView;
 }
+
 
 @end

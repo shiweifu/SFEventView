@@ -4,7 +4,10 @@
 //
 
 #import "SFEventView.h"
-#import "SSArrayDataSource.h"
+
+#define kScreenWidth [UIScreen mainScreen].bounds.size.width
+#define kBGFadeDuration .2
+
 
 @interface UIView(FrameHelpers)
 
@@ -49,6 +52,8 @@
 @property (nonatomic, strong) UICollectionViewLayout *bottomViewLayout;
 
 
+@property (nonatomic, strong) UIView *transparentView;
+@property (nonatomic) BOOL visible;
 @end
 
 @implementation SFEventView
@@ -102,19 +107,109 @@
     [self addSubview:_topView];
     [self addSubview:_bottomView];
 
-    [_topView setSize:(CGSize){320, 200}];
-    [_bottomView setSize:(CGSize){320, 100}];
+    [_topView setSize:(CGSize){kScreenWidth, 200}];
+    [_bottomView setSize:(CGSize){kScreenWidth, 100}];
 
     [self addSubview:self.cancelBtn];
+
+    CGSize size = self.intrinsicContentSize;
+    self.width = size.width;
+    self.height = size.height;
+
+    self.transparentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth([UIScreen mainScreen].bounds), CGRectGetHeight([UIScreen mainScreen].bounds))];
+    self.transparentView.backgroundColor = [UIColor blackColor];
+    self.transparentView.alpha = 0.0f;
+
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelSelection)];
+    tap.numberOfTapsRequired = 1;
+    [self.transparentView addGestureRecognizer:tap];
+    [self setBackgroundColor:[UIColor whiteColor]];
+
+
   }
 
   return self;
 }
 
--(void)showInView:(UIView *)view;
+- (void)cancelSelection
 {
 
 }
+
+- (CGSize)intrinsicContentSize
+{
+  CGFloat width = kScreenWidth;
+  CGFloat height = self.topView.height + self.bottomView.height + self.cancelBtn.height + 42 + 10;
+
+  return (CGSize){width, height};
+}
+
+
+- (void)showInView:(UIView *)theView {
+
+  [theView addSubview:self];
+  [theView insertSubview:self.transparentView belowSubview:self];
+
+  CGRect theScreenRect = [UIScreen mainScreen].bounds;
+
+  float height;
+  float x;
+
+  if (UIInterfaceOrientationIsPortrait([[UIApplication sharedApplication] statusBarOrientation])) {
+    height = CGRectGetHeight(theScreenRect);
+    x = CGRectGetWidth(theView.frame) / 2.0;
+    self.transparentView.frame = CGRectMake(self.transparentView.center.x, self.transparentView.center.y, CGRectGetWidth(theScreenRect), CGRectGetHeight(theScreenRect));
+  } else {
+    height = CGRectGetWidth(theScreenRect);
+    x = CGRectGetHeight(theView.frame) / 2.0;
+    self.transparentView.frame = CGRectMake(self.transparentView.center.x, self.transparentView.center.y, CGRectGetHeight(theScreenRect), CGRectGetWidth(theScreenRect));
+  }
+
+  self.center = CGPointMake(x, height + CGRectGetHeight(self.frame) / 2.0);
+  self.transparentView.center = CGPointMake(x, height / 2.0);
+
+
+  [UIView animateWithDuration:0.3f
+                        delay:0
+       usingSpringWithDamping:0.85f
+        initialSpringVelocity:1.0f
+                      options:UIViewAnimationOptionCurveLinear
+                   animations:^{
+                     self.transparentView.alpha = 0.4f;
+                     self.center = CGPointMake(x, height - CGRectGetHeight(self.frame) / 2.0);
+
+                   } completion:^(BOOL finished) {
+            self.visible = YES;
+          }];
+}
+//
+//- (void) cancelSelection {
+//  if(self.callback) self.callback(self, NSIntegerMax);
+//  [self removeFromView];
+//}
+//
+//- (void)removeFromView {
+//
+//  if (self.shouldCancelOnTouch) {
+//
+//      [UIView animateWithDuration:0.3f
+//                            delay:0
+//           usingSpringWithDamping:0.85f
+//            initialSpringVelocity:1.0f
+//                          options:UIViewAnimationOptionCurveLinear
+//                       animations:^{
+//                         self.transparentView.alpha = 0.0f;
+//                         self.center = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight([UIScreen mainScreen].bounds) + CGRectGetHeight(self.frame) / 2.0);
+//
+//                       } completion:^(BOOL finished) {
+//                [self.transparentView removeFromSuperview];
+//                [self removeFromSuperview];
+//                self.visible = NO;
+//              }];
+//
+//  }
+//
+//}
 
 #pragma mark - Property
 
@@ -127,6 +222,9 @@
                 forState:UIControlStateNormal];
     [_cancelBtn setTitleColor:[UIColor grayColor]
                      forState:UIControlStateNormal];
+
+    [_cancelBtn setWidth:kScreenWidth];
+    [_cancelBtn setHeight:50];
   }
   return _cancelBtn;
 
@@ -224,17 +322,17 @@
 {
   [super layoutSubviews];
 
-  self.titleLabel.x = self.titleLabel.superview.width / 2 - self.titleLabel.width / 2 ;
-  self.titleLabel.y = 0;
+  self.titleLabel.x = kScreenWidth / 2 - self.titleLabel.width / 2 ;
+  self.titleLabel.y = 10;
 
-  [self.topView setY:self.titleLabel.height + 15];
+  [self.topView setY:self.titleLabel.y + self.titleLabel.height + 10];
   [self.topSepLine setY:self.topView.height + self.topView.y];
 
   [self.bottomView setY:self.topSepLine.height + self.topSepLine.y + 10];
   [self.bottomSepLine setY:self.bottomView.height + self.bottomView.y];
 
   [self.cancelBtn setY:self.bottomSepLine.y + self.bottomSepLine.height];
-  [self.cancelBtn setWidth:320];
+  [self.cancelBtn setWidth:kScreenWidth];
   [self.cancelBtn setHeight:50];
 }
 
@@ -358,7 +456,7 @@
 
 + (UIView *)lineViewWithColor:(UIColor *)color
 {
-  CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
+  CGFloat screenWidth = kScreenWidth;
   UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, 0.5)];
   lineView.backgroundColor = color;
   return lineView;
