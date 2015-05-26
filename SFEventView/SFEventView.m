@@ -107,8 +107,8 @@
     [self addSubview:_topView];
     [self addSubview:_bottomView];
 
-    [_topView setSize:(CGSize){kScreenWidth, 200}];
-    [_bottomView setSize:(CGSize){kScreenWidth, 100}];
+    [_topView setSize:(CGSize){kScreenWidth, 190}];
+    [_bottomView setSize:(CGSize){kScreenWidth, 110}];
 
     [self addSubview:self.cancelBtn];
 
@@ -131,15 +131,10 @@
   return self;
 }
 
-- (void)cancelSelection
-{
-
-}
-
 - (CGSize)intrinsicContentSize
 {
   CGFloat width = kScreenWidth;
-  CGFloat height = self.topView.height + self.bottomView.height + self.cancelBtn.height + 42 + 10;
+  CGFloat height = self.topView.height + self.bottomView.height + self.cancelBtn.height + 52;
 
   return (CGSize){width, height};
 }
@@ -182,34 +177,27 @@
             self.visible = YES;
           }];
 }
-//
-//- (void) cancelSelection {
-//  if(self.callback) self.callback(self, NSIntegerMax);
-//  [self removeFromView];
-//}
-//
-//- (void)removeFromView {
-//
-//  if (self.shouldCancelOnTouch) {
-//
-//      [UIView animateWithDuration:0.3f
-//                            delay:0
-//           usingSpringWithDamping:0.85f
-//            initialSpringVelocity:1.0f
-//                          options:UIViewAnimationOptionCurveLinear
-//                       animations:^{
-//                         self.transparentView.alpha = 0.0f;
-//                         self.center = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight([UIScreen mainScreen].bounds) + CGRectGetHeight(self.frame) / 2.0);
-//
-//                       } completion:^(BOOL finished) {
-//                [self.transparentView removeFromSuperview];
-//                [self removeFromSuperview];
-//                self.visible = NO;
-//              }];
-//
-//  }
-//
-//}
+
+- (void) cancelSelection {
+  [self removeFromView];
+}
+
+- (void)removeFromView {
+    [UIView animateWithDuration:0.3f
+                          delay:0
+         usingSpringWithDamping:0.85f
+          initialSpringVelocity:1.0f
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                       self.transparentView.alpha = 0.0f;
+                       self.center = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight([UIScreen mainScreen].bounds) + CGRectGetHeight(self.frame) / 2.0);
+
+                     } completion:^(BOOL finished) {
+              [self.transparentView removeFromSuperview];
+              [self removeFromSuperview];
+              self.visible = NO;
+            }];
+}
 
 #pragma mark - Property
 
@@ -225,16 +213,18 @@
 
     [_cancelBtn setWidth:kScreenWidth];
     [_cancelBtn setHeight:50];
+    [_cancelBtn addTarget:self
+                   action:@selector(cancelSelection)
+         forControlEvents:UIControlEventTouchUpInside];
   }
   return _cancelBtn;
-
 }
 
 - (UIView *)topSepLine
 {
   if(!_topSepLine)
   {
-    _topSepLine = [UIView lineViewWithColor:[UIColor grayColor]];
+    _topSepLine = [UIView lineViewWithColor:[UIColor lightGrayColor]];
   }
   return _topSepLine;
 }
@@ -243,7 +233,7 @@
 {
   if(!_bottomSepLine)
   {
-    _bottomSepLine = [UIView lineViewWithColor:[UIColor grayColor]];
+    _bottomSepLine = [UIView lineViewWithColor:[UIColor lightGrayColor]];
   }
   return _bottomSepLine;
 }
@@ -296,8 +286,8 @@
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     layout.minimumInteritemSpacing = 0.0f;
     layout.minimumLineSpacing = 0.0f;
-    layout.sectionInset = UIEdgeInsetsMake( 0, 0, 0, 0) ;
-    layout.itemSize = (CGSize){80, 100};
+    layout.sectionInset = UIEdgeInsetsMake( 5, 0, 10, 0) ;
+    layout.itemSize = (CGSize){80, 80};
     _topViewLayout = layout;
   }
   return _topViewLayout;
@@ -311,8 +301,8 @@
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     layout.minimumInteritemSpacing = 0.0f;
     layout.minimumLineSpacing = 0.0f;
-    layout.sectionInset = UIEdgeInsetsMake( 0, 0, 0, 0) ;
-    layout.itemSize = (CGSize){80, 100};
+    layout.sectionInset = UIEdgeInsetsMake( 5, 0, 10, 0) ;
+    layout.itemSize = (CGSize){80, 80};
     _bottomViewLayout = layout;
   }
   return _bottomViewLayout;
@@ -323,9 +313,9 @@
   [super layoutSubviews];
 
   self.titleLabel.x = kScreenWidth / 2 - self.titleLabel.width / 2 ;
-  self.titleLabel.y = 10;
+  self.titleLabel.y = 15;
 
-  [self.topView setY:self.titleLabel.y + self.titleLabel.height + 10];
+  [self.topView setY:self.titleLabel.y + self.titleLabel.height + 15];
   [self.topSepLine setY:self.topView.height + self.topView.y];
 
   [self.bottomView setY:self.topSepLine.height + self.topSepLine.y + 10];
@@ -333,7 +323,7 @@
 
   [self.cancelBtn setY:self.bottomSepLine.y + self.bottomSepLine.height];
   [self.cancelBtn setWidth:kScreenWidth];
-  [self.cancelBtn setHeight:50];
+  [self.cancelBtn setHeight:44];
 }
 
 @end
@@ -363,10 +353,11 @@
 {
   [self.contentView addSubview:self.textLabel];
   [self.contentView addSubview:self.imageView];
-
-  [self.imageView setX:10];
+  self.imageView.x = self.contentView.width / 2 - self.imageView.width / 2;
+//  [self.imageView setX:10];
   [self.imageView setY:0];
-  [self.textLabel setX:0];
+
+  self.textLabel.x = self.imageView.center.x - self.textLabel.width / 2;
   [self.textLabel setY:self.imageView.height + 10];
 }
 
@@ -386,7 +377,10 @@
 {
   if(!_imageView)
   {
-    _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 60, 60)];
+    _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
+    CALayer *lay  = _imageView.layer;
+    [lay setMasksToBounds:YES];
+    [lay setCornerRadius:25.0];
   }
   return _imageView;
 }

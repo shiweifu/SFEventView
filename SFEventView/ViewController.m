@@ -53,20 +53,28 @@ forControlEvents:UIControlEventTouchUpInside];
     NSMutableArray *arr = [@[] mutableCopy];
     NSMutableArray *bottomArray = [@[] mutableCopy];
 
-    for(int i = 0; i < 20; i++)
+    NSArray *titles = @[@"微信好友", @"微信朋友圈", @"印象笔记", @"QQ", @"Pocket", @"复制链接", @"新浪微博", @"有道云笔记"];
+
+    for(int i = 5; i < 20; i++)
     {
-      SFEventItem *item1 = [[SFEventItem alloc] initWithText:@"QQ"
-                                                       image:[UIImage imageNamed:@"icon1"]
+      NSString *imgName = [NSString stringWithFormat:@"sns_icon_%d", i+1];
+      UIImage *img = [UIImage imageNamed:imgName];
+      NSString *title = titles[arc4random_uniform(titles.count)];
+      SFEventItem *item = [[SFEventItem alloc] initWithText:title
+                                                       image:img
                                                       action:nil];
-      [arr addObject:item1];
+      [arr addObject:item];
     }
 
     for(int i = 0; i < 1; i++)
     {
-      SFEventItem *item1 = [[SFEventItem alloc] initWithText:@"weixin"
-                                                       image:[UIImage imageNamed:@"icon2"]
+      NSString *imgName = [NSString stringWithFormat:@"sns_icon_%d", i+20];
+      UIImage *img = [UIImage imageNamed:imgName];
+
+      SFEventItem *item = [[SFEventItem alloc] initWithText:@"weixin"
+                                                       image:img
                                                       action:nil];
-      [bottomArray addObject:item1];
+      [bottomArray addObject:item];
     }
 
     _eventView = [[SFEventView alloc] initWithTitle:@"分享问题"
