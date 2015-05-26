@@ -1,44 +1,26 @@
-//
-//  ViewController.m
-//  SFEventView
-//
-//  Created by shiweifu on 5/25/15.
-//  Copyright (c) 2015 shiweifu. All rights reserved.
-//
+### 这是啥？
+
+一个上下两栏的事件面板
+
+### 解决了啥
+
+有些时候想定义一个类似UIActiveityController的面板，或者用于分享，或者用于其他事件，但好像没有合适的，这个时候你恰巧看到咱这个库，你就不用自己写了，代码简单易懂，下来看看，你看不了吃亏，看不了上当。
+
+### 有啥特点？
+
+ - 两步集成
+ - 可以无限添加Item
 
 
-#import "ViewController.h"
-#import "SFEventView.h"
+### 没图你说啥
 
+![](event_view.jpg)
 
-@interface ViewController ()
+![](event_view_scroll.jpg)
 
-@property (nonatomic, strong) SFEventView *eventView;
+### 那么，怎样用？
 
-@end
-
-@implementation ViewController
-
-
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  // Do any additional setup after loading the view, typically from a nib.
-//  [self.view addSubview:self.eventView];
-
-
-  UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-  [btn setTitle:@"click" forState:UIControlStateNormal];
-  [btn setFrame:CGRectMake(100, 300, 80, 50)];
-  [btn setTitleColor:[UIColor darkGrayColor]
-            forState:UIControlStateNormal];
-  [btn addTarget:self
-          action:@selector(onClick:)
-forControlEvents:UIControlEventTouchUpInside];
-  [self.view addSubview:btn];
-
-
-}
-
+```
 - (void)onClick:(id)onClick
 {
   [self.eventView showInView:self.view];
@@ -93,5 +75,21 @@ forControlEvents:UIControlEventTouchUpInside];
   }
   return _eventView;
 }
+```
 
-@end
+
+### 有没有Pods？
+
+稍等，马上就来
+
+### 未来有啥计划？
+
+ - 支持动态添加Item
+ - 做成可配置的，想要几行就几行 
+
+
+### 联系我？
+
+mail: shiweifu@gmail.com  
+wechat: kernel32
+
