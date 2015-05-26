@@ -12,10 +12,12 @@ typedef void (^SFEventItemActionBlock)(id sender);
 @interface SFEventItem : NSObject
 
 @property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) NSString *type;
 @property (nonatomic, strong) UIImage  *image;
 @property (copy) SFEventItemActionBlock action;
 
 - (instancetype)initWithText:(NSString *)text
+                        type:(NSString *)type
                        image:(UIImage *)image
                       action:(SFEventItemActionBlock)action;
 

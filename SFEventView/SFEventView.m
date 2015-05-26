@@ -124,8 +124,6 @@
     tap.numberOfTapsRequired = 1;
     [self.transparentView addGestureRecognizer:tap];
     [self setBackgroundColor:[UIColor whiteColor]];
-
-
   }
 
   return self;
@@ -198,6 +196,28 @@
               self.visible = NO;
             }];
 }
+
+- (void)  collectionView:(UICollectionView *)collectionView
+didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+  SFEventItem *item = nil;
+  if(collectionView == self.topView)
+  {
+    item = self.topItems[(NSUInteger) indexPath.row];
+  }
+  else
+  {
+    item = self.bottomItems[(NSUInteger) indexPath.row];
+  }
+
+  if(item.action)
+  {
+    item.action(item);
+  }
+
+  [self cancelSelection];
+}
+
 
 #pragma mark - Property
 
@@ -331,6 +351,7 @@
 @implementation SFEventItem
 
 - (instancetype)initWithText:(NSString *)text
+                        type:(NSString *)type
                        image:(UIImage *)image
                       action:(SFEventItemActionBlock)action
 {
@@ -339,6 +360,7 @@
   {
     _text = text;
     _image = image;
+    _type = type;
     _action = [action copy];
   }
 

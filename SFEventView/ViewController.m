@@ -60,9 +60,19 @@ forControlEvents:UIControlEventTouchUpInside];
       NSString *imgName = [NSString stringWithFormat:@"sns_icon_%d", i+1];
       UIImage *img = [UIImage imageNamed:imgName];
       NSString *title = titles[arc4random_uniform(titles.count)];
+
+      SFEventItemActionBlock action = ^(SFEventItem *item)
+      {
+        NSLog(@"%@", item.text);
+      };
+
       SFEventItem *item = [[SFEventItem alloc] initWithText:title
+                                                       type:@"test"
                                                        image:img
-                                                      action:nil];
+                                                      action:action];
+
+
+
       [arr addObject:item];
     }
 
@@ -72,6 +82,7 @@ forControlEvents:UIControlEventTouchUpInside];
       UIImage *img = [UIImage imageNamed:imgName];
 
       SFEventItem *item = [[SFEventItem alloc] initWithText:@"weixin"
+                                                       type:@"weixin"
                                                        image:img
                                                       action:nil];
       [bottomArray addObject:item];
@@ -83,6 +94,5 @@ forControlEvents:UIControlEventTouchUpInside];
   }
   return _eventView;
 }
-
 
 @end
