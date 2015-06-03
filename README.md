@@ -80,7 +80,9 @@
 
 ### 有没有Pods？
 
-稍等，马上就来
+`pod search SFEventView`
+`pod SFEventView`
+你懂得。
 
 ### 未来有啥计划？
 
