@@ -5,9 +5,10 @@
 
 #import "SFEventView.h"
 
+#ifndef kScreenWidth
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
+#endif
 #define kBGFadeDuration .2
-
 
 @interface UIView(FrameHelpers)
 
@@ -77,15 +78,21 @@
 
     _topView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)
                                   collectionViewLayout:self.topViewLayout];
-    [_topView setBackgroundColor:[UIColor whiteColor]];
+    [_topView setBackgroundColor:[UIColor clearColor]];
 
     [_topView registerClass:[SFEventItemCell class]
  forCellWithReuseIdentifier:[SFEventItemCell identifier]];
-
+    [_topView setShowsHorizontalScrollIndicator:NO];
+    [_topView setShowsVerticalScrollIndicator:NO];
+    [_topView setPagingEnabled:YES];
 
     _bottomView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) 
                                      collectionViewLayout:self.bottomViewLayout];
-    [_bottomView setBackgroundColor:[UIColor whiteColor]];
+    [_bottomView setBackgroundColor:[UIColor clearColor]];
+
+    [_bottomView setShowsHorizontalScrollIndicator:NO];
+    [_bottomView setShowsVerticalScrollIndicator:NO];
+    [_bottomView setPagingEnabled:YES];
 
     [_bottomView registerClass:[SFEventItemCell class]
     forCellWithReuseIdentifier:[SFEventItemCell identifier]];
@@ -120,13 +127,26 @@
     self.transparentView.backgroundColor = [UIColor blackColor];
     self.transparentView.alpha = 0.0f;
 
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cancelSelection)];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(closeView)];
     tap.numberOfTapsRequired = 1;
     [self.transparentView addGestureRecognizer:tap];
     [self setBackgroundColor:[UIColor whiteColor]];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cancelSelection)
+                                                 name:kEventViewRemoveNotification
+                                               object:nil];
   }
 
   return self;
+}
+
+- (void)closeView
+{
+  [[NSNotificationCenter defaultCenter] postNotificationName:kEventViewRemoveNotification
+                                                      object:nil
+                                                    userInfo:nil];
 }
 
 - (CGSize)intrinsicContentSize
@@ -169,7 +189,7 @@
                       options:UIViewAnimationOptionCurveLinear
                    animations:^{
                      self.transparentView.alpha = 0.4f;
-                     self.center = CGPointMake(x, height - CGRectGetHeight(self.frame) / 2.0);
+                     self.center = CGPointMake(x, height - CGRectGetHeight(self.frame) / 2.0 - 65);
 
                    } completion:^(BOOL finished) {
             self.visible = YES;
@@ -276,7 +296,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
   if(!_bottomDataSource)
   {
-    _bottomDataSource = [[SSArrayDataSource alloc] initWithItems:self.topItems];
+    _bottomDataSource = [[SSArrayDataSource alloc] initWithItems:self.bottomItems];
     [_bottomDataSource setCellConfigureBlock:^(SFEventItemCell *cell, SFEventItem *object, id parentView, NSIndexPath *indexPath)
     {
       [cell.imageView setImage:object.image];
@@ -402,7 +422,7 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
     _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
     CALayer *lay  = _imageView.layer;
     [lay setMasksToBounds:YES];
-    [lay setCornerRadius:25.0];
+    [lay setCornerRadius:5.0];
   }
   return _imageView;
 }
@@ -468,6 +488,13 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
   frame.size.width = size.width;
   frame.size.height = size.height;
   self.frame = frame;
+}
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                  name:kEventViewRemoveNotification
+                                                object:nil];
 }
 
 + (UIView *)lineViewWithColor:(UIColor *)color

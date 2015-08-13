@@ -7,6 +7,9 @@
 #import <UIKit/UIKit.h>
 #import <SSDataSources/SSDataSources.h>
 
+
+static NSString * const kEventViewRemoveNotification = @"kEventViewRemoveNotification";
+
 typedef void (^SFEventItemActionBlock)(id sender);
 
 @interface SFEventItem : NSObject
