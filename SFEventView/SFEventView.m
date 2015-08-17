@@ -366,6 +366,15 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
   [self.cancelBtn setHeight:44];
 }
 
+#pragma mark - dealloc
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                  name:kEventViewRemoveNotification
+                                                object:nil];
+}
+
 @end
 
 @implementation SFEventItem
@@ -488,13 +497,6 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
   frame.size.width = size.width;
   frame.size.height = size.height;
   self.frame = frame;
-}
-
-- (void)dealloc
-{
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:kEventViewRemoveNotification
-                                                object:nil];
 }
 
 + (UIView *)lineViewWithColor:(UIColor *)color
