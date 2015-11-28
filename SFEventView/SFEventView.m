@@ -88,7 +88,7 @@
     [_topView setShowsVerticalScrollIndicator:NO];
     [_topView setPagingEnabled:YES];
 
-    _bottomView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 0, 0) 
+    _bottomView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 0, 0)
                                      collectionViewLayout:self.bottomViewLayout];
     [_bottomView setBackgroundColor:[UIColor clearColor]];
 
@@ -118,8 +118,11 @@
 
 
     // 一行有几个
-    CGFloat cols = kScreenWidth / 80;
-    NSUInteger rows = (NSUInteger) ((topItems.count / cols) + 1);
+    NSUInteger cols = (NSUInteger) (kScreenWidth / 80);
+
+    // 一共几行
+    NSUInteger rows = (NSUInteger) ((CGFloat)topItems.count / cols + 0.5);
+    // 最终高度
     NSUInteger height = rows * 80 + rows * 10;
 
     [_topView setSize:(CGSize){kScreenWidth, height}];
@@ -209,20 +212,20 @@
 }
 
 - (void)removeFromView {
-    [UIView animateWithDuration:0.3f
-                          delay:0
-         usingSpringWithDamping:0.85f
-          initialSpringVelocity:1.0f
-                        options:UIViewAnimationOptionCurveLinear
-                     animations:^{
-                       self.transparentView.alpha = 0.0f;
-                       self.center = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight([UIScreen mainScreen].bounds) + CGRectGetHeight(self.frame) / 2.0);
+  [UIView animateWithDuration:0.3f
+                        delay:0
+       usingSpringWithDamping:0.85f
+        initialSpringVelocity:1.0f
+                      options:UIViewAnimationOptionCurveLinear
+                   animations:^{
+                     self.transparentView.alpha = 0.0f;
+                     self.center = CGPointMake(CGRectGetWidth(self.frame) / 2.0, CGRectGetHeight([UIScreen mainScreen].bounds) + CGRectGetHeight(self.frame) / 2.0);
 
-                     } completion:^(BOOL finished) {
-              [self.transparentView removeFromSuperview];
-              [self removeFromSuperview];
-              self.visible = NO;
-            }];
+                   } completion:^(BOOL finished) {
+            [self.transparentView removeFromSuperview];
+            [self removeFromSuperview];
+            self.visible = NO;
+          }];
 }
 
 - (void)  collectionView:(UICollectionView *)collectionView
