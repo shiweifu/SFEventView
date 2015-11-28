@@ -63,6 +63,7 @@
 - (instancetype)initWithTitle:(NSString *)title
                      topItems:(NSArray  *)topItems
                   bottomItems:(NSArray  *)bottomItems
+                   layoutType:(SFEventViewLayoutType) layoutType
 {
   self = [super init];
   if (self)
@@ -70,6 +71,7 @@
     _title = title;
     _bottomItems = bottomItems;
     _topItems    = topItems;
+    _layoutType = layoutType;
 
     self.titleLabel.text = _title;
     [self addSubview:self.titleLabel];
@@ -107,7 +109,13 @@
     [self addSubview:_topView];
     [self addSubview:_bottomView];
 
-    [_topView setSize:(CGSize){kScreenWidth, 190}];
+
+    // 一行有几个
+    CGFloat cols = kScreenWidth / 80;
+    NSUInteger rows = (NSUInteger) ((topItems.count / cols) + 1);
+    NSUInteger height = rows * 80 + rows * 10;
+
+    [_topView setSize:(CGSize){kScreenWidth, height}];
     [_bottomView setSize:(CGSize){kScreenWidth, 110}];
 
     [self addSubview:self.cancelBtn];
@@ -303,10 +311,19 @@ didSelectItemAtIndexPath:(NSIndexPath *)indexPath
   if(!_topViewLayout)
   {
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+
+    if(self.layoutType == SFEVentViewLayoutTypeVertical)
+    {
+      layout.scrollDirection = UICollectionViewScrollDirectionVertical;
+      layout.minimumLineSpacing = 10.0f;
+    }
+    else
+    {
+      layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    }
+
     layout.minimumInteritemSpacing = 0.0f;
-    layout.minimumLineSpacing = 0.0f;
-    layout.sectionInset = UIEdgeInsetsMake( 5, 0, 10, 0) ;
+    layout.sectionInset = UIEdgeInsetsMake( 5, 0, 5, 0) ;
     layout.itemSize = (CGSize){80, 80};
     _topViewLayout = layout;
   }

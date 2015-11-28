@@ -9,6 +9,12 @@
 
 typedef void (^SFEventItemActionBlock)(id sender);
 
+typedef
+enum {
+    SFEVentViewLayoutTypeVertical,
+    SFEVentViewLayoutTypeHorizontal,
+} SFEventViewLayoutType;
+
 @interface SFEventItem : NSObject
 
 @property (nonatomic, strong) NSString *text;
@@ -25,12 +31,14 @@ typedef void (^SFEventItemActionBlock)(id sender);
 
 @interface SFEventView : UIView <UICollectionViewDelegate>
 
-
 - (instancetype)initWithTitle:(NSString *)title
                      topItems:(NSArray *)topItems
-                  bottomItems:(NSArray *)bottomItems;
+                  bottomItems:(NSArray *)bottomItems
+                   layoutType:(SFEventViewLayoutType)layoutType;
 
 -(void)showInView:(UIView *)view;
+
+@property (assign) SFEventViewLayoutType layoutType;
 
 @end
 

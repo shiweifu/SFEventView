@@ -54,7 +54,7 @@ forControlEvents:UIControlEventTouchUpInside];
 
     NSArray *titles = @[@"微信好友", @"微信朋友圈", @"印象笔记", @"QQ", @"Pocket", @"复制链接", @"新浪微博", @"有道云笔记"];
 
-    for(int i = 5; i < 20; i++)
+    for(int i = 5; i < 15; i++)
     {
       NSString *imgName = [NSString stringWithFormat:@"sns_icon_%d", i+1];
       UIImage *img = [UIImage imageNamed:imgName];
@@ -89,7 +89,8 @@ forControlEvents:UIControlEventTouchUpInside];
 
     _eventView = [[SFEventView alloc] initWithTitle:@"分享问题"
                                            topItems:arr
-                                        bottomItems:bottomArray];
+                                        bottomItems:bottomArray
+                                         layoutType:SFEVentViewLayoutTypeHorizontal];
   }
   return _eventView;
 }
