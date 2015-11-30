@@ -119,9 +119,8 @@
 
     // 一行有几个
     NSUInteger cols = (NSUInteger) (kScreenWidth / 80);
-
     // 一共几行
-    NSUInteger rows = (NSUInteger) ((CGFloat)topItems.count / cols + 0.5);
+    NSUInteger rows = (NSUInteger) round(((CGFloat)topItems.count / cols + 0.5));
     // 最终高度
     NSUInteger height = rows * 80 + rows * 10;
 
